@@ -42,7 +42,7 @@
 import { ref } from 'vue';
 
 const emit = defineEmits<{
-  docUploaded: [val: File];
+  documentUploaded: [val: File];
 }>();
 
 const fancyUploader = ref<HTMLInputElement | null>(null);
@@ -81,7 +81,7 @@ function setFile(files: File) {
 function emitFile() {
   if (!uploadedFile.value) return;
 
-  emit('docUploaded', uploadedFile.value);
+  emit('documentUploaded', uploadedFile.value);
 }
 
 function removeFile() {
