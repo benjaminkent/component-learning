@@ -23,6 +23,7 @@
       class="hidden"
       type="file"
       accept="image/*,.pdf"
+      multiple="false"
       @change="handleUpload"
     />
     <p v-if="uploadedFile" class="text-purple-100 absolute flex items-center">
@@ -40,7 +41,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-defineEmits<{}>();
+const emit = defineEmits<{
+  docUploaded: [val: File];
+}>();
 
 const fancyUploader = ref<HTMLInputElement | null>(null);
 const uploadedFile = ref<File | null>(null);
@@ -50,6 +53,7 @@ function handleDrop(e: DragEvent) {
   if (!e.dataTransfer?.files) return;
 
   setFile(e.dataTransfer.files[0]);
+  emitFile();
 }
 
 function handleUpload(e: Event) {
@@ -59,7 +63,7 @@ function handleUpload(e: Event) {
 
   setFile(target.files[0]);
 
-  (fancyUploader.value as HTMLInputElement).value = '';
+  emitFile();
 }
 
 function setFile(files: File) {
@@ -74,7 +78,11 @@ function setFile(files: File) {
   draggingOver.value = false;
 }
 
-function emitFile() {}
+function emitFile() {
+  if (!uploadedFile.value) return;
+
+  emit('docUploaded', uploadedFile.value);
+}
 
 function removeFile() {
   uploadedFile.value = null;
