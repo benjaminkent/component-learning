@@ -45,6 +45,8 @@ const emit = defineEmits<{
   documentUploaded: [val: File];
 }>();
 
+defineExpose({ removeFile });
+
 const fancyUploader = ref<HTMLInputElement | null>(null);
 const uploadedFile = ref<File | null>(null);
 const draggingOver = ref(false);
