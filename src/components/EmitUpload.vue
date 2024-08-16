@@ -49,7 +49,21 @@ const draggingOver = ref(false);
 function handleDrop(e: DragEvent) {
   if (!e.dataTransfer?.files) return;
 
-  uploadedFile.value = e.dataTransfer.files[0];
+  setFile(e.dataTransfer.files[0]);
+}
+
+function handleUpload(e: Event) {
+  const target = e.target as HTMLInputElement;
+
+  if (!target || !target.files) return;
+
+  setFile(target.files[0]);
+
+  (fancyUploader.value as HTMLInputElement).value = '';
+}
+
+function setFile(files: File) {
+  uploadedFile.value = files;
 
   const fileFormData = new FormData();
 
@@ -60,19 +74,7 @@ function handleDrop(e: DragEvent) {
   draggingOver.value = false;
 }
 
-function handleUpload(e: Event) {
-  const target = e.target as HTMLInputElement;
-
-  if (!target || !target.files) return;
-
-  uploadedFile.value = target.files[0];
-
-  const fileFormData = new FormData();
-
-  fileFormData.append(uploadedFile.value.name, uploadedFile.value);
-
-  (fancyUploader.value as HTMLInputElement).value = '';
-}
+function emitFile() {}
 
 function removeFile() {
   uploadedFile.value = null;
