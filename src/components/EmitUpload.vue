@@ -1,8 +1,20 @@
 <template>
   <div class="relative w-full mb-5">
     <label
+      v-if="draggingOver"
+      class="w-full py-3 bg-purple-100 rounded border-2 border-dashed border-purple-500 flex justify-center text-purple-500"
+      @dragstart="draggingOver = true"
+      @dragleave="draggingOver = false"
+      @drop.prevent="handleDrop"
+      @dragenter.prevent
+      @dragover.prevent
+      >Drop file</label
+    >
+    <label
+      v-else
       for="fancy-uploader"
       class="w-full py-3 bg-purple-100 rounded border-2 border-dashed border-purple-500 flex justify-center cursor-pointer"
+      @dragover="draggingOver = true"
       >Drop file or <span class="text-purple-600 ml-1">Browse</span></label
     >
     <input
@@ -23,9 +35,6 @@
       >
     </p>
   </div>
-  <div>
-    <p>some content below to make sure it's not moving</p>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -35,6 +44,11 @@ defineEmits<{}>();
 
 const fancyUploader = ref<HTMLInputElement | null>(null);
 const uploadedFile = ref<File | null>(null);
+const draggingOver = ref(false);
+
+function handleDrop(e: DragEvent) {
+  // need to figure out how to get the file from the event
+}
 
 function handleUpload(e: Event) {
   const target = e.target as HTMLInputElement;
