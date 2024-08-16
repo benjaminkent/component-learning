@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center gap-8 bg-zinc-700 h-screen pt-28">
+  <div class="flex flex-col items-center gap-8 bg-zinc-700 h-screen pt-56">
     <div class="w-1/2">
       <EmitUpload />
     </div>
