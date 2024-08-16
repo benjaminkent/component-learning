@@ -29,7 +29,7 @@ import { documentUpload } from '@/stores/docUploadStore';
 
 const { uploadDocument } = documentUpload();
 
-const emitUpload = ref<any>(null);
+const emitUpload = ref<typeof EmitUpload | null>(null);
 const documentForUpload = ref<File | null>(null);
 const uploadLoading = ref(false);
 
@@ -43,7 +43,7 @@ async function handleUpload() {
 
   await uploadDocument();
 
-  emitUpload.value.removeFile();
+  emitUpload.value?.removeFile();
 
   uploadLoading.value = false;
 }
