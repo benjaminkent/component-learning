@@ -28,7 +28,7 @@ import EmitUpload from '@/components/EmitUpload.vue';
 import { ArrowPathIcon } from '@heroicons/vue/24/solid';
 import { documentUpload } from '@/stores/docUploadStore';
 
-// could potentially scoped slots and slot props to display things like
+// could potentially use scoped slots and slot props to display things like
 // file name, error message
 
 const { uploadDocument } = documentUpload();
