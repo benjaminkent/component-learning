@@ -26,16 +26,14 @@
       multiple="false"
       @change="handleUpload"
     />
-    <p v-if="uploadedFile" class="text-purple-100 absolute flex items-center">
-      Uploaded file:
-      <span class="text-purple-500 ml-1">{{ uploadedFile?.name }}</span>
-      <span
-        class="bg-purple-100 text-purple-900 h-5 w-5 flex justify-center items-center rounded-full mx-2 border-purple-500 pb-1 cursor-pointer"
-        @click="removeFile"
-        >x</span
-      >
+    <p v-if="errored" class="text-red-500 absolute flex items-center">
+      File type is unsupported for this input. Try uploading a
+      {{ supportedFileTypes.replaceAll(',', ', ') }} file type instead.
     </p>
-    <p v-if="errored" class="text-purple-100 absolute flex items-center">
+    <p
+      v-else-if="uploadedFile"
+      class="text-purple-100 absolute flex items-center"
+    >
       Uploaded file:
       <span class="text-purple-500 ml-1">{{ uploadedFile?.name }}</span>
       <span
@@ -48,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 defineExpose({ removeFile });
 
@@ -56,7 +54,7 @@ const emit = defineEmits<{
   documentUploaded: [val: File];
 }>();
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     supportedFileTypes: string;
   }>(),
@@ -68,12 +66,29 @@ withDefaults(
 const fancyUploader = ref<HTMLInputElement | null>(null);
 const uploadedFile = ref<File | null>(null);
 const draggingOver = ref(false);
-const errored = ref('');
+const errored = ref(false);
+
+const isFileValid = computed(() => {
+  const validFileExtensions = props.supportedFileTypes.split(',');
+
+  let baseValidState = false;
+
+  for (const fileExtension of validFileExtensions) {
+    if (uploadedFile.value && uploadedFile.value.name.includes(fileExtension)) {
+      baseValidState = true;
+      break;
+    }
+  }
+
+  return baseValidState;
+});
 
 function handleDrop(e: DragEvent) {
   if (!e.dataTransfer?.files) return;
 
   setFile(e.dataTransfer.files[0]);
+  validateFile();
+  if (errored.value) return;
   emitFile();
 }
 
@@ -83,7 +98,8 @@ function handleUpload(e: Event) {
   if (!target || !target.files) return;
 
   setFile(target.files[0]);
-
+  validateFile();
+  if (errored.value) return;
   emitFile();
 }
 
@@ -107,5 +123,14 @@ function emitFile() {
 
 function removeFile() {
   uploadedFile.value = null;
+}
+
+function validateFile() {
+  if (!isFileValid.value) {
+    errored.value = true;
+    return;
+  }
+
+  errored.value = false;
 }
 </script>

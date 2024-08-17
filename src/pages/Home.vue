@@ -38,7 +38,6 @@ const documentForUpload = ref<File | null>(null);
 const uploadLoading = ref(false);
 
 function handleDocumentUploaded(file: File) {
-  console.log('foo', file);
   documentForUpload.value = file;
 }
 
