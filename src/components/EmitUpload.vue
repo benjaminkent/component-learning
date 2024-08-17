@@ -22,11 +22,20 @@
       id="fancy-uploader"
       class="hidden"
       type="file"
-      accept="image/*,.pdf"
+      :accept="supportedFileTypes"
       multiple="false"
       @change="handleUpload"
     />
     <p v-if="uploadedFile" class="text-purple-100 absolute flex items-center">
+      Uploaded file:
+      <span class="text-purple-500 ml-1">{{ uploadedFile?.name }}</span>
+      <span
+        class="bg-purple-100 text-purple-900 h-5 w-5 flex justify-center items-center rounded-full mx-2 border-purple-500 pb-1 cursor-pointer"
+        @click="removeFile"
+        >x</span
+      >
+    </p>
+    <p v-if="errored" class="text-purple-100 absolute flex items-center">
       Uploaded file:
       <span class="text-purple-500 ml-1">{{ uploadedFile?.name }}</span>
       <span
@@ -41,15 +50,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+defineExpose({ removeFile });
+
 const emit = defineEmits<{
   documentUploaded: [val: File];
 }>();
 
-defineExpose({ removeFile });
+withDefaults(
+  defineProps<{
+    supportedFileTypes: string;
+  }>(),
+  {
+    supportedFileTypes: 'image/*',
+  }
+);
 
 const fancyUploader = ref<HTMLInputElement | null>(null);
 const uploadedFile = ref<File | null>(null);
 const draggingOver = ref(false);
+const errored = ref('');
 
 function handleDrop(e: DragEvent) {
   if (!e.dataTransfer?.files) return;

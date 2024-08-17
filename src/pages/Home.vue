@@ -3,6 +3,7 @@
     <div class="w-1/2">
       <EmitUpload
         ref="emitUpload"
+        supported-file-types=".jpg,.jpeg,.png,.pdf"
         @document-uploaded="handleDocumentUploaded"
       />
       <div class="flex items-center mt-10">
